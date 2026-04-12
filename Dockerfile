@@ -15,14 +15,12 @@ COPY requirements.in .
 RUN uv pip compile requirements.in -o requirements.txt && \
   uv pip install --no-cache --prefix=/install -r requirements.txt
 
-# --- ランタイムステージ ---
+# ランタイムステージ
 FROM python:3.12-slim
 WORKDIR /app
 
-# 実行に必要な最小限のシステムライブラリ
-RUN apt-get update && apt-get install -y \
-  libgl1 \
-  libglib2.0-0 \
+# 画像処理に必要なライブラリをインストール
+RUN apt-get update && apt-get install -y libgl1 libglib2.0-0 \
   && rm -rf /var/lib/apt/lists/*
 
 # ビルドステージからインストール済みライブラリをコピー

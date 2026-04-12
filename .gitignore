@@ -175,3 +175,5 @@ cython_debug/
 .vscode
 neo4j
 dickens
+server/inputs/
+server/rag_storage/

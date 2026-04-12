@@ -4,7 +4,11 @@ import nest_asyncio
 import streamlit as st
 import streamlit.components.v1 as components
 from dotenv import load_dotenv
-from utils.graph_visualize import visualize_graphml, show_hierarchy_graph
+from utils.graph_visualize import (
+    visualize_graphml,
+    show_hierarchy_graph,
+    visualize_key_person_graph,
+)
 from utils.rag import make_index, search
 from utils.common import select_dataset, select_language, select_graph_storage, check_storage, select_search_mode, select_modal, upload_image, ModalType
 
@@ -52,6 +56,25 @@ def display_knowledge_graph(graph_storage, filename):
             components.html(f.read(), height=500)
         df = show_hierarchy_graph(filename)
         st.dataframe(df)
+
+
+def display_key_person_map(filename, top_n_people, max_related_nodes_per_person):
+    filepath = (
+        f"./visualize/key_person_map_{filename}_{top_n_people}_{max_related_nodes_per_person}.html"
+    )
+    try:
+        df = visualize_key_person_graph(
+            dataset=filename,
+            html_path=filepath,
+            top_n_people=top_n_people,
+            max_related_nodes_per_person=max_related_nodes_per_person,
+        )
+    except (FileNotFoundError, ValueError) as error:
+        st.error(str(error))
+        return
+    with open(filepath, "r", encoding="utf-8") as f:
+        components.html(f.read(), height=760, scrolling=False)
+    st.dataframe(df, use_container_width=True)
 
 # チャット履歴の初期化
 def initialize_chat_history():
@@ -109,6 +132,23 @@ async def main():
             await make_index(filename)
     if st.button("View Knowledge Graph", help="知識グラフを確認する"):
         display_knowledge_graph(graph_storage, filename)
+
+    key_person_count = st.slider("Key Persons", min_value=3, max_value=15, value=8)
+    related_node_count = st.slider(
+        "Related Nodes per Person",
+        min_value=2,
+        max_value=10,
+        value=5,
+    )
+    if st.button(
+        "View Key Person Map",
+        help="Show a person-centered graph with always-visible labels.",
+    ):
+        display_key_person_map(
+            filename,
+            top_n_people=key_person_count,
+            max_related_nodes_per_person=related_node_count,
+        )
 
     mode = select_search_mode()
     modal = select_modal()

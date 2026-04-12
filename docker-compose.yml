@@ -1,5 +1,7 @@
 x-app-service: &app-service
   build: .
+  image: graphrag-demo-app:py312
+  container_name: app
   command: ["streamlit", "run", "app.py"]
   volumes:
     - .:/app
@@ -7,6 +9,9 @@ x-app-service: &app-service
     - .env
   environment:
     - TZ=Asia/Tokyo
+    - NEO4J_URI=${NEO4J_URI}
+    - NEO4J_USERNAME=${NEO4J_USERNAME}
+    - NEO4J_PASSWORD=${NEO4J_PASSWORD}
   ports:
     - "8501:8501"
     - "8888:8888"
@@ -36,6 +41,7 @@ x-lightrag-service: &lightrag-service
     - .env
   environment:
     - TZ=Asia/Tokyo
+    - LLM_MODEL=gpt-4.1
     - LLM_BINDING_HOST=${API_HOST}
     - LLM_BINDING_API_KEY=${API_KEY}
     - EMBEDDING_BINDING_HOST=${API_HOST}
