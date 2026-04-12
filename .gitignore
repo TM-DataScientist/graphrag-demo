@@ -177,3 +177,16 @@ neo4j
 dickens
 server/inputs/
 server/rag_storage/
+
+# Local generated artifacts
+/openapi.lightrag.json
+/prompt.md
+/image.png
+/image copy.png
+/image copy 2.png
+/visualize/
+/visualize.executed.ipynb
+/ragtest/.env
+/ragtest/cache/
+/ragtest/logs/
+/ragtest/output/

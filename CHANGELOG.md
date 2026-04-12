@@ -1,5 +1,11 @@
 # Change Log
 
+## 2026-04-12
+
+- Added `requirements.win.txt` generated with `uv pip compile` to preserve a Windows-resolvable dependency set.
+- Added a reusable `ragtest` sample workspace with GraphRAG settings, prompts, and input text while keeping secrets and generated outputs out of version control.
+- Ignored local visualization outputs, API schema dumps, and other one-off working files to keep the repository status clean.
+
 ## 2026-04-09
 
 - Executed the GraphRAG local query for `Who is Scrooge and what are his main relationships?` against `ragtest`.
